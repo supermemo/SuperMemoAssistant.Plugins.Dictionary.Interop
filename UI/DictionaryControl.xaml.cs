@@ -38,6 +38,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Elements;
+using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Models;
 using SuperMemoAssistant.Services;

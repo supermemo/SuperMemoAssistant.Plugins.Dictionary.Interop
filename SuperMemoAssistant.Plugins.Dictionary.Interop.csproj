@@ -124,7 +124,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /R /Y $(TargetPath) C:\Users\Lila\AppData\Roaming\SuperMemoAssistant\Plugins\c76cfa78-f820-4f05-9429-4a3a3c9c1414</PostBuildEvent>
+    <PostBuildEvent>xcopy /R /Y $(TargetPath) %25AppData%25\SuperMemoAssistant\Plugins\c76cfa78-f820-4f05-9429-4a3a3c9c1414</PostBuildEvent>
   </PropertyGroup>
   <Import Project="..\..\..\packages\Fody.3.3.5\build\Fody.targets" Condition="Exists('..\..\..\packages\Fody.3.3.5\build\Fody.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
