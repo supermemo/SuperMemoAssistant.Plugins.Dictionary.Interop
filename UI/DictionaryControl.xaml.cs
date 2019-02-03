@@ -37,7 +37,6 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using SuperMemoAssistant.Interop.SuperMemo.Elements;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Models;
@@ -121,8 +120,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
       Html              = null;
       Word              = null;
 
-      LoadingIndicator.IsActive   = false;
-      LoadingIndicator.Visibility = Visibility.Collapsed;
+      //LoadingIndicator.IsActive   = false;
+      //LoadingIndicator.Visibility = Visibility.Collapsed;
 
       base.OnToolTipClosing(e);
     }
@@ -155,8 +154,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
 
     private void OnNewEntries(PendingEntryResult pending)
     {
-      LoadingIndicator.IsActive   = true;
-      LoadingIndicator.Visibility = Visibility.Visible;
+      //LoadingIndicator.IsActive   = true;
+      //LoadingIndicator.Visibility = Visibility.Visible;
 
       Browser.NavigateToString(DictionaryConst.Loading);
 
@@ -173,8 +172,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
           Dispatcher.Invoke(
             () =>
             {
-              LoadingIndicator.IsActive   = false;
-              LoadingIndicator.Visibility = Visibility.Collapsed;
+              //LoadingIndicator.IsActive   = false;
+              //LoadingIndicator.Visibility = Visibility.Collapsed;
               Browser.NavigateToString(Html);
             }
           );
