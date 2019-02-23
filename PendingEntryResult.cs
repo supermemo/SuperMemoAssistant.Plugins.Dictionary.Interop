@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/12/31 05:51
-// Modified On:  2019/01/01 20:51
+// Modified On:  2019/02/23 14:02
 // Modified By:  Alexis
 
 #endregion
@@ -30,9 +30,9 @@
 
 
 
-using System.Threading;
 using System.Threading.Tasks;
 using SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Models;
+using SuperMemoAssistant.Sys.Remoting;
 
 namespace SuperMemoAssistant.Plugins.Dictionary.Interop
 {
@@ -40,13 +40,13 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop
   {
     #region Constructors
 
-    public PendingEntryResult(CancellationTokenSource tokenSource,
-                              Task<EntryResult>       entryResultTask,
-                              IDictionaryPlugin       plugin)
+    public PendingEntryResult(RemoteCancellationTokenSource cancellationTokenSrc,
+                              Task<EntryResult>             entryResultTask,
+                              IDictionaryService            plugin)
     {
-      EntryResultTask = entryResultTask;
-      Plugin          = plugin;
-      TokenSource     = tokenSource;
+      CancellationTokenSrc = cancellationTokenSrc;
+      EntryResultTask      = entryResultTask;
+      Plugin               = plugin;
     }
 
     #endregion
@@ -56,9 +56,9 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop
 
     #region Properties & Fields - Public
 
-    public Task<EntryResult>       EntryResultTask { get; }
-    public IDictionaryPlugin       Plugin          { get; }
-    public CancellationTokenSource TokenSource     { get; }
+    public RemoteCancellationTokenSource CancellationTokenSrc { get; }
+    public Task<EntryResult>             EntryResultTask      { get; }
+    public IDictionaryService            Plugin               { get; }
 
     #endregion
   }

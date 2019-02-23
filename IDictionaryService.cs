@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/12/31 01:15
-// Modified On:  2018/12/31 12:47
+// Modified On:  2019/02/23 14:40
 // Modified By:  Alexis
 
 #endregion
@@ -31,26 +31,25 @@
 
 
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Models;
+using SuperMemoAssistant.Sys.Remoting;
 
 namespace SuperMemoAssistant.Plugins.Dictionary.Interop
 {
-  public interface IDictionaryPlugin
+  public interface IDictionaryService
   {
     bool CredentialsAvailable { get; }
 
-    Task<EntryResult> LookupEntry(CancellationToken ct,
-                                  string            word,
-                                  string            language = "en");
+    RemoteTask<EntryResult> LookupEntry(RemoteCancellationToken ct,
+                                        string                  word,
+                                        string                  language = "en");
 
-    Task<LemmatronResult> LookupLemma(CancellationToken ct,
-                                      string            word,
-                                      string            language = "en");
+    RemoteTask<LemmatronResult> LookupLemma(RemoteCancellationToken ct,
+                                            string                  word,
+                                            string                  language = "en");
 
-    Task<List<OxfordDictionary>> GetAvailableDictionaries(CancellationToken ct);
+    RemoteTask<List<OxfordDictionary>> GetAvailableDictionaries(RemoteCancellationToken ct);
 
     IElement RootElement { get; }
   }

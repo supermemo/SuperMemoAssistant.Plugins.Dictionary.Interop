@@ -30,9 +30,12 @@
 
 
 
+using System;
+
 namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Models
 {
   /// <summary>A type of dictionary</summary>
+  [Serializable]
   public enum DictionaryType
   {
     Monolingual,
@@ -40,6 +43,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
   }
 
   /// <summary>A class that hold information about dictionary</summary>
+  [Serializable]
   public class OxfordDictionary
   {
     #region Properties & Fields - Public

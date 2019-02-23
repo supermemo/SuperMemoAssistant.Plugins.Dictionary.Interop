@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/12/31 04:46
-// Modified On:  2019/01/01 22:33
+// Modified On:  2019/02/23 14:55
 // Modified By:  Alexis
 
 #endregion
@@ -30,17 +30,18 @@
 
 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Models;
 using SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Models;
 using SuperMemoAssistant.Services;
+using SuperMemoAssistant.Sys.Remoting;
 
 namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
 {
@@ -63,6 +64,12 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
                                     }
                                   ));
 
+    public static readonly DependencyProperty OnBeforeExtractProperty =
+      DependencyProperty.Register("OnBeforeExtract", typeof(Func<bool>), typeof(DictionaryControl));
+
+    public static readonly DependencyProperty OnAfterExtractProperty =
+      DependencyProperty.Register("OnAfterExtract", typeof(Func<bool, bool>), typeof(DictionaryControl));
+
     #endregion
 
 
@@ -70,9 +77,9 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
 
     #region Properties & Fields - Non-Public
 
-    private CancellationTokenSource CancelTokenSource { get; set; }
+    private IDictionaryService Plugin { get; set; }
 
-    private IDictionaryPlugin Plugin { get; set; }
+    private RemoteCancellationTokenSource CancelTokenSource { get; set; }
 
     private string Html { get; set; }
 
@@ -98,6 +105,19 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
 
 
     #region Properties & Fields - Public
+
+    public Func<bool> OnBeforeExtract
+    {
+      get => (Func<bool>)GetValue(OnBeforeExtractProperty);
+      set => SetValue(OnBeforeExtractProperty, value);
+    }
+
+
+    public Func<bool, bool> OnAfterExtract
+    {
+      get => (Func<bool, bool>)GetValue(OnAfterExtractProperty);
+      set => SetValue(OnAfterExtractProperty, value);
+    }
 
     public PendingEntryResult Entries
     {
@@ -133,17 +153,24 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
 
     #region Methods
 
-    public void Extract()
+    public bool Extract()
     {
-      if (!Svc.SMA.Registry.Element.Add(
+      if (OnBeforeExtract != null && OnBeforeExtract() == false)
+        return false;
+
+      bool success = Svc.SMA.Registry.Element.Add(
         new ElementBuilder(ElementType.Topic,
                            Html)
           .WithParent(Plugin.RootElement)
           .WithTitle(Word)
           .DoNotDisplay()
-      ))
+      );
+
+      if (OnAfterExtract == null || OnAfterExtract(success))
         MessageBox.Show("Element creation failed.",
                         "Error");
+
+      return success;
     }
 
     private void BtnExtract_Click(object          sender,
@@ -159,7 +186,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
 
       Browser.NavigateToString(DictionaryConst.Loading);
 
-      CancelTokenSource = pending.TokenSource;
+      CancelTokenSource = pending.CancellationTokenSrc;
       Plugin            = pending.Plugin;
 
       pending.EntryResultTask.ContinueWith(

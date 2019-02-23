@@ -30,8 +30,11 @@
 
 
 
+using System;
+
 namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Models
 {
+  [Serializable]
   public class Metadata
   {
     #region Properties & Fields - Public
@@ -40,7 +43,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class GrammaticalFeature
   {
     #region Properties & Fields - Public
@@ -50,7 +54,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class Example
   {
     #region Properties & Fields - Public
@@ -59,7 +64,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class Subsens
   {
     #region Properties & Fields - Public
@@ -73,7 +79,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class Sense
   {
     #region Properties & Fields - Public
@@ -87,7 +94,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class Entry
   {
     #region Properties & Fields - Public
@@ -100,7 +108,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class Pronunciation
   {
     #region Properties & Fields - Public
@@ -112,7 +121,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class LexicalEntry
   {
     #region Properties & Fields - Public
@@ -126,7 +136,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class HeadwordEntry
   {
     #region Properties & Fields - Public
@@ -140,7 +151,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class EntryResult
   {
     #region Properties & Fields - Public
@@ -150,7 +162,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class Inflection
   {
     #region Properties & Fields - Public
@@ -160,7 +173,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class LemmatronLexicalEntry
   {
     #region Properties & Fields - Public
@@ -173,7 +187,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class HeadwordLemmatron
   {
     #region Properties & Fields - Public
@@ -186,7 +201,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-
+  
+  [Serializable]
   public class LemmatronResult
   {
     #region Properties & Fields - Public

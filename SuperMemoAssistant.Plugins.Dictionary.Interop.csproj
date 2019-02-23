@@ -89,7 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DictionaryConst.cs" />
-    <Compile Include="IDictionaryPlugin.cs" />
+    <Compile Include="IDictionaryService.cs" />
     <Compile Include="OxfordDictionaries\Models\Dictionary.cs" />
     <Compile Include="OxfordDictionaries\Models\Models.cs" />
     <Compile Include="PendingEntryResult.cs" />
