@@ -166,7 +166,9 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
           .DoNotDisplay()
       );
 
-      if (OnAfterExtract == null || OnAfterExtract(success))
+      var displayError = OnAfterExtract == null || OnAfterExtract(success);
+
+      if (success == false && displayError)
         MessageBox.Show("Element creation failed.",
                         "Error");
 
