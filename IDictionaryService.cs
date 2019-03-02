@@ -22,7 +22,7 @@
 // 
 // 
 // Created On:   2018/12/31 01:15
-// Modified On:  2019/02/23 14:40
+// Modified On:  2019/03/02 01:05
 // Modified By:  Alexis
 
 #endregion
@@ -52,5 +52,6 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop
     RemoteTask<List<OxfordDictionary>> GetAvailableDictionaries(RemoteCancellationToken ct);
 
     IElement RootElement { get; }
+    string   Layout      { get; }
   }
 }

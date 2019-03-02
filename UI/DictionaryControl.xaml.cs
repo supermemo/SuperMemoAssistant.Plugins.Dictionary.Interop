@@ -162,6 +162,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
         new ElementBuilder(ElementType.Topic,
                            Html)
           .WithParent(Plugin.RootElement)
+          .WithLayout(Plugin.Layout)
           .WithTitle(Word)
           .DoNotDisplay()
       );
