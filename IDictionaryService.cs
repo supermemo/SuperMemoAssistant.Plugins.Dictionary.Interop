@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/12/31 01:15
-// Modified On:  2019/03/02 01:05
+// Created On:   2019/03/02 18:29
+// Modified On:  2019/03/28 15:21
 // Modified By:  Alexis
 
 #endregion
@@ -53,5 +53,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop
 
     IElement RootElement { get; }
     string   Layout      { get; }
+
+    double       ExtractPriority    { get; }
+    List<string> AvailableLanguages { get; }
   }
 }

@@ -163,6 +163,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
                            Html)
           .WithParent(Plugin.RootElement)
           .WithLayout(Plugin.Layout)
+          .WithPriority(Plugin.ExtractPriority)
           .WithTitle(Word)
           .DoNotDisplay()
       );
