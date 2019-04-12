@@ -166,7 +166,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
           .WithPriority(Plugin.ExtractPriority)
           .WithTitle(Word)
           .DoNotDisplay()
-      );
+      ).Count == 0;
 
       var displayError = OnAfterExtract == null || OnAfterExtract(success);
 
