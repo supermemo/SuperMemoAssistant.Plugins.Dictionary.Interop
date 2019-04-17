@@ -159,6 +159,8 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
         return false;
 
       bool success = Svc.SMA.Registry.Element.Add(
+        out _,
+        ElemCreationFlags.CreateSubfolders,
         new ElementBuilder(ElementType.Topic,
                            Html)
           .WithParent(Plugin.RootElement)
@@ -166,7 +168,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
           .WithPriority(Plugin.ExtractPriority)
           .WithTitle(Word)
           .DoNotDisplay()
-      ).Count == 0;
+      );
 
       var displayError = OnAfterExtract == null || OnAfterExtract(success);
 
