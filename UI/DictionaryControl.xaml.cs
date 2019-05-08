@@ -30,7 +30,6 @@
 
 
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -45,6 +44,19 @@ using SuperMemoAssistant.Sys.Remoting;
 
 namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
 {
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <param name="success"></param>
+  /// <returns>Whether to show an information popup in case of error.</returns>
+  public delegate bool DictionaryWordExtractedDelegate(bool success);
+
+  /// <summary>
+  /// 
+  /// </summary>
+  /// <returns>Whether to continue with extract or not</returns>
+  public delegate bool DictionaryWordExtractingDelegate();
+
   /// <summary>Interaction logic for DictionaryControl.xaml</summary>
   public partial class DictionaryControl : UserControl
   {
@@ -65,10 +77,10 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
                                   ));
 
     public static readonly DependencyProperty OnBeforeExtractProperty =
-      DependencyProperty.Register("OnBeforeExtract", typeof(Func<bool>), typeof(DictionaryControl));
+      DependencyProperty.Register("OnBeforeExtract", typeof(DictionaryWordExtractingDelegate), typeof(DictionaryControl));
 
     public static readonly DependencyProperty OnAfterExtractProperty =
-      DependencyProperty.Register("OnAfterExtract", typeof(Func<bool, bool>), typeof(DictionaryControl));
+      DependencyProperty.Register("OnAfterExtract", typeof(DictionaryWordExtractedDelegate), typeof(DictionaryControl));
 
     #endregion
 
@@ -106,16 +118,16 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
 
     #region Properties & Fields - Public
 
-    public Func<bool> OnBeforeExtract
+    public DictionaryWordExtractingDelegate OnBeforeExtract
     {
-      get => (Func<bool>)GetValue(OnBeforeExtractProperty);
+      get => (DictionaryWordExtractingDelegate)GetValue(OnBeforeExtractProperty);
       set => SetValue(OnBeforeExtractProperty, value);
     }
 
 
-    public Func<bool, bool> OnAfterExtract
+    public DictionaryWordExtractedDelegate OnAfterExtract
     {
-      get => (Func<bool, bool>)GetValue(OnAfterExtractProperty);
+      get => (DictionaryWordExtractedDelegate)GetValue(OnAfterExtractProperty);
       set => SetValue(OnAfterExtractProperty, value);
     }
 
