@@ -170,7 +170,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
       if (OnBeforeExtract != null && OnBeforeExtract() == false)
         return false;
 
-      bool success = Svc.SMA.Registry.Element.Add(
+      bool success = Svc.SM.Registry.Element.Add(
         out _,
         ElemCreationFlags.CreateSubfolders,
         new ElementBuilder(ElementType.Topic,
