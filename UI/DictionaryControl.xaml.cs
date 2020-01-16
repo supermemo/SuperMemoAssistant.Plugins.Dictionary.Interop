@@ -30,10 +30,10 @@
 
 
 
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Builders;
@@ -70,8 +70,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
                                     (o,
                                      ev) =>
                                     {
-                                      var ctrl = o as DictionaryControl;
-                                      if (ctrl != null && ev.NewValue != null)
+                                      if (o is DictionaryControl ctrl && ev.NewValue != null)
                                         ctrl.OnNewEntries((PendingEntryResult)ev.NewValue);
                                     }
                                   ));
@@ -212,7 +211,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
         {
           Html = task?.Result == null
             ? DictionaryConst.Error
-            : BuildHtml(task.Result);
+            : BuildHtml(task.Result).Result;
 
           Dispatcher.Invoke(
             () =>
@@ -226,111 +225,9 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
       );
     }
 
-    private string BuildHtml(EntryResult entries)
+    private async Task<string> BuildHtml(EntryResult entries)
     {
-      if (entries == null || entries.Results.Any() == false)
-        return string.Empty;
-
-      Word = entries.Results[0].Word;
-      List<string> entriesStr = new List<string>();
-
-      foreach (var lexEntry in entries.Results[0].LexicalEntries)
-      {
-        var lexCategory   = lexEntry.LexicalCategory ?? "N/A";
-        var pronunciation = BuildPronunciation(lexEntry.Pronunciations);
-
-        foreach (var gramEntry in lexEntry.Entries)
-        {
-          List<string> sensesStr = new List<string>();
-          var          etymology = gramEntry.Etymologies?.FirstOrDefault();
-
-          foreach (var sense in gramEntry.Senses)
-          {
-            if (sense.Definitions == null)
-              continue;
-
-            var definition = HtmlEncode(sense.Definitions.FirstOrDefault());
-
-            if (sense.Examples != null)
-            {
-              var examplesStr = sense.Examples.Select(
-                e =>
-                  string.Format(DictionaryConst.DefinitionEntryExampleItem,
-                                HtmlEncode(e.Text))
-              );
-              sensesStr.Add(
-                string.Format(
-                  DictionaryConst.DefinitionEntryExampleSense,
-                  definition,
-                  string.Join("\r\n",
-                              examplesStr)
-                )
-              );
-            }
-
-            else
-            {
-              sensesStr.Add(string.Format(DictionaryConst.DefinitionEntrySense,
-                                          definition));
-            }
-          }
-
-          string entryStr;
-
-          if (etymology != null)
-            entryStr = string.Format(DictionaryConst.DefinitionEntryEtymology,
-                                     lexCategory,
-                                     pronunciation,
-                                     string.Join("\r\n",
-                                                 sensesStr),
-                                     HtmlEncode(etymology)
-            );
-
-          else
-            entryStr = string.Format(DictionaryConst.DefinitionEntry,
-                                     lexCategory,
-                                     pronunciation,
-                                     string.Join("\r\n",
-                                                 sensesStr)
-            );
-
-          entriesStr.Add(entryStr);
-        }
-      }
-
-      return string.Format(DictionaryConst.DefinitionSkeleton,
-                           Word,
-                           string.Join(DictionaryConst.DefinitionSeparator,
-                                       entriesStr)
-      );
-    }
-
-    private static string BuildPronunciation(Pronunciation[] pronunciations)
-    {
-      if (pronunciations == null)
-        return string.Empty;
-
-      return HtmlEncode(string.Join(", ",
-                                    pronunciations.Select(p => $"/{p.PhoneticSpelling}/")));
-    }
-
-    private static string HtmlEncode(string text)
-    {
-      // call the normal HtmlEncode first
-      char[]        chars       = WebUtility.HtmlEncode(text).ToCharArray();
-      StringBuilder encodedText = new StringBuilder();
-
-      foreach (char c in chars)
-        if (c > 127) // above normal ASCII
-          encodedText.Append("&#" + (int)c + ";");
-        else
-          encodedText.Append(c);
-
-      return encodedText.Replace("&#65534;",
-                                 "-\r\n")
-                        .Replace("\n",
-                                 "\n<br/>")
-                        .ToString();
+      return await Plugin.ApplyUserTemplate(entries);
     }
 
     #endregion

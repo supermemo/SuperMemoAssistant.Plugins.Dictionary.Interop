@@ -6,7 +6,7 @@
 // copy of this software and associated documentation files (the "Software"),
 // to deal in the Software without restriction, including without limitation
 // the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the 
+// and/or sell copies of the Software, and to permit persons to whom the
 // Software is furnished to do so, subject to the following conditions:
 // 
 // The above copyright notice and this permission notice shall be included in
@@ -21,8 +21,8 @@
 // DEALINGS IN THE SOFTWARE.
 // 
 // 
-// Created On:   2018/12/31 01:10
-// Modified On:  2018/12/31 03:30
+// Created On:   2019/09/03 18:15
+// Modified On:  2020/01/15 12:11
 // Modified By:  Alexis
 
 #endregion
@@ -31,9 +31,12 @@
 
 
 using System;
+using System.Linq;
 
 namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Models
 {
+  #region Shared
+
   [Serializable]
   public class Metadata
   {
@@ -43,28 +46,55 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-  
+
   [Serializable]
-  public class GrammaticalFeature
+  public class TextTypeDTO
   {
     #region Properties & Fields - Public
 
+    public string Id   { get; set; }
     public string Text { get; set; }
     public string Type { get; set; }
 
     #endregion
   }
-  
+
+  [Serializable]
+  public class TextDTO
+  {
+    #region Properties & Fields - Public
+
+    public string Id   { get; set; }
+    public string Text { get; set; }
+
+    #endregion
+  }
+
+  #endregion
+
+
+
+
+  #region Entries
+
+  //
+  //
+  // Entries
+
   [Serializable]
   public class Example
   {
     #region Properties & Fields - Public
 
-    public string Text { get; set; }
+    public string[]      Definitions { get; set; }
+    public TextTypeDTO[] Notes       { get; set; }
+    public TextDTO[]     Regions     { get; set; }
+    public TextDTO[]     Registers   { get; set; }
+    public string        Text        { get; set; }
 
     #endregion
   }
-  
+
   [Serializable]
   public class Subsens
   {
@@ -73,70 +103,78 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
     public string[]  Definitions { get; set; }
     public Example[] Examples    { get; set; }
     public string    Id          { get; set; }
-    public string[]  Domains     { get; set; }
-    public string[]  Regions     { get; set; }
-    public string[]  Registers   { get; set; }
+    public TextDTO[]  Domains     { get; set; }
+    public TextDTO[]  Regions     { get; set; }
+    public TextDTO[]  Registers   { get; set; }
 
     #endregion
   }
-  
+
   [Serializable]
   public class Sense
   {
     #region Properties & Fields - Public
 
-    public string[]  Definitions { get; set; }
-    public string[]  Domains     { get; set; }
-    public Example[] Examples    { get; set; }
-    public string    Id          { get; set; }
-    public Subsens[] Subsenses   { get; set; }
-    public string[]  Registers   { get; set; }
+    public string[]        Definitions      { get; set; }
+    public TextDTO[]       Domains          { get; set; }
+    public string[]        Etymologies      { get; set; }
+    public Example[]       Examples         { get; set; }
+    public string          Id               { get; set; }
+    public TextTypeDTO[]   Notes            { get; set; }
+    public Pronunciation[] Pronunciations   { get; set; }
+    public string[]        ShortDefinitions { get; set; }
+    public Subsens[]       Subsenses        { get; set; }
+    public TextDTO[]       Registers        { get; set; }
 
     #endregion
   }
-  
+
   [Serializable]
   public class Entry
   {
     #region Properties & Fields - Public
 
-    public string[]             Etymologies         { get; set; }
-    public GrammaticalFeature[] GrammaticalFeatures { get; set; }
-    public string               HomographNumber     { get; set; }
-    public Pronunciation[]      Pronunciations      { get; set; }
-    public Sense[]              Senses              { get; set; }
+    public string[]        Etymologies         { get; set; }
+    public TextTypeDTO[]   GrammaticalFeatures { get; set; }
+    public string          HomographNumber     { get; set; }
+    public Pronunciation[] Pronunciations      { get; set; }
+    public Sense[]         Senses              { get; set; }
 
     #endregion
   }
-  
+
   [Serializable]
   public class Pronunciation
   {
     #region Properties & Fields - Public
 
-    public string   AudioFile        { get; set; }
-    public string[] Dialects         { get; set; }
-    public string   PhoneticNotation { get; set; }
-    public string   PhoneticSpelling { get; set; }
+    public string    AudioFile        { get; set; }
+    public string[]  Dialects         { get; set; }
+    public string    PhoneticNotation { get; set; }
+    public string    PhoneticSpelling { get; set; }
+    public TextDTO[] Regions          { get; set; }
+    public TextDTO[] Registers        { get; set; }
 
     #endregion
   }
-  
+
   [Serializable]
   public class LexicalEntry
   {
     #region Properties & Fields - Public
 
-    public Entry[]              Entries             { get; set; }
-    public GrammaticalFeature[] GrammaticalFeatures { get; set; }
-    public string               Language            { get; set; }
-    public string               LexicalCategory     { get; set; }
-    public Pronunciation[]      Pronunciations      { get; set; }
-    public string               Text                { get; set; }
+    public Entry[]         Entries             { get; set; }
+    public TextTypeDTO[]   GrammaticalFeatures { get; set; }
+    public string          Language            { get; set; }
+    public TextDTO         LexicalCategory     { get; set; }
+    public TextTypeDTO[]   Notes               { get; set; }
+    public Pronunciation[] Pronunciations      { get; set; }
+    public string          Text                { get; set; }
+    public bool            HasEtymologies      => Entries?.Any(e => e?.Etymologies?.Any() ?? false) ?? false;
 
     #endregion
   }
-  
+
   [Serializable]
   public class HeadwordEntry
   {
@@ -151,7 +189,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-  
+
   [Serializable]
   public class EntryResult
   {
@@ -162,9 +200,20 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-  
+
+  #endregion
+
+
+
+
+  #region Lemmas
+
+  //
+  //
+  // Lemmas
+
   [Serializable]
-  public class Inflection
+  public class InflectionOrCategory
   {
     #region Properties & Fields - Public
 
@@ -173,21 +222,21 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-  
+
   [Serializable]
   public class LemmatronLexicalEntry
   {
     #region Properties & Fields - Public
 
-    public GrammaticalFeature[] GrammaticalFeatures { get; set; }
-    public Inflection[]         InflectionOf        { get; set; }
-    public string               Language            { get; set; }
-    public string               LexicalCategory     { get; set; }
-    public string               Text                { get; set; }
+    public TextTypeDTO[]          GrammaticalFeatures { get; set; }
+    public InflectionOrCategory[] InflectionOf        { get; set; }
+    public string                 Language            { get; set; }
+    public InflectionOrCategory   LexicalCategory     { get; set; }
+    public string                 Text                { get; set; }
 
     #endregion
   }
-  
+
   [Serializable]
   public class HeadwordLemmatron
   {
@@ -201,7 +250,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
-  
+
   [Serializable]
   public class LemmatronResult
   {
@@ -212,4 +261,6 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Model
 
     #endregion
   }
+
+  #endregion
 }

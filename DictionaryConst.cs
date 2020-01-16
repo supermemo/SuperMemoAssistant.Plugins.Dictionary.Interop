@@ -30,6 +30,11 @@
 
 
 
+using System.Collections.Generic;
+using System.Linq;
+using SuperMemoAssistant.Extensions;
+using SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Models;
+
 namespace SuperMemoAssistant.Plugins.Dictionary.Interop {
   public static class DictionaryConst
   {
@@ -43,349 +48,558 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop {
  <div style=""margin: auto""><p>An error occured while looking up the definition.</p></div>
 </body>";
 
-    public const string DefinitionSkeleton = @"<body>
+    public const string DefinitionRenderTemplate = @"<html>
+<head>
+<style>
+.horizontal-line {
+  margin-bottom: 10px;
+  border-top: 1px solid #C9C9C9;
+}
+.pronunciation {
+  margin-left: 2px;
+  padding-left: 10px;
+  border-left: 1px dotted #444;
+}
+.etymologies {
+  font-size: 0.8em;
+}
+</style>
+</head>
+<body>
+{{ #Results.0 }}
+  <h3>{{ Word }}</h3>
 
- <h3>{0}</h3>
- 
- {1}
+  {{ #Results }}
+  {{ #LexicalEntries }}
+  <div class=horizontal-line></div>
+  <div class=""lexical-entry"">
+    <span><b>{{ Word }}{{ #LexicalCategory }} ({{ LexicalCategory.Text }}){{ /LexicalCategory }}</b></span>
+    {{ #Pronunciations.0 }}<span class=""pronunciation"">{{ #Pronunciations }}/{{ F_Escape PhoneticSpelling }}/ {{ /Pronunciations }}</span>{{ /Pronunciations.0 }}
+    <ol>
+    {{ #Entries }}
+      {{ #Senses }}{{ #Definitions.0 }}
+      <li>
+        {{ F_Escape Definitions.0 }}
+        {{ #Exemples.0 }}
+        <ul>
+        {{ #Exemples }}
+          <li><i>{{ F_Escape Text }}</i></li>
+        {{ /Exemples }}
+        </ul>
+        {{ /Exemples.0 }}
+      </li>
+      {{ /Definitions.0 }}{{ /Senses }}
+    {{ /Entries }}
+    </ol>
+    
+    {{ #HasEtymologies }}
+    <p class=""etymologies""><u>Etymologies</u>:
+    {{ #Entries }}
+      {{ #Etymologies }}<br/>- {{ F_Escape . }}{{ /Etymologies }}
+    {{ /Entries }}
+    </p>
+    {{ /HasEtymologies }}
+  </div>
+  {{ /LexicalEntries }}
+  {{ /Results }}
 
-</body>";
-    public const string DefinitionSeparator = @"
-
- <div style=""margin-bottom: 10px; border-top: 1px solid #C9C9C9;""></div>
-
-";
-    public const string DefinitionEntry = @"<span><b>{0}</b></span> <span style=""margin-left: 2px; padding-left: 10px; border-left: 1px dotted #444;"">{1}</span>
- <ol>
-  {2}
- </ol>";
-    public const string DefinitionEntryEtymology = @"<span><b>{0}</b></span> <span style=""margin-left: 2px; padding-left: 10px; border-left: 1px dotted #444;"">{1}</span>
- <ol>
-  {2}
- </ol>
- <p style=""font-size: 0.8em;""><u>Etymology</u>: {3}</p>";
-    public const string DefinitionEntrySense = @"<li>
-   {0}
-  </li>";
-    public const string DefinitionEntryExampleSense = @"<li>
-   {0}
-   <ul>
-    {1}
-   </ul>
-  </li>";
-    public const string DefinitionEntryExampleItem = @"<li><i>{0}</i></li>";
+{{ /Results.0 }}
+</body>
+</html>";
 
 
     public const double DefaultExtractPriority = 30.0;
+    
+    public static IReadOnlyDictionary<string, OxfordDictionary> MonolingualDictionaries { get; } =
+      OxfordLanguagesJson.Deserialize<List<OxfordDictionary>>()
+                         .Where(d => d.Type == DictionaryType.Monolingual)
+                         .ToDictionary(d => d.ToString());
 
+    public static ISet<string> AllMonolingualLanguages { get; } =
+      OxfordLanguagesJson.Deserialize<List<OxfordDictionary>>()
+                         .Where(d => d.Type == DictionaryType.Monolingual)
+                         .Select(d => d.GetLanguageId())
+                         .ToHashSet();
+
+
+    public static OxfordDictionary DefaultDictionary { get; } =
+      MonolingualDictionaries.SafeGet(DefaultDictionaryStr) ?? MonolingualDictionaries.Values.FirstOrDefault();
+
+    public const string DefaultDictionaryStr = "British English Dictionary (ODE)";
     public const string OxfordLanguagesJson = @"[
-  {
-    ""region"": ""gb"",
-    ""source"": ""Oxford Dictionary of English 3e"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""English-Spanish Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""es""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""monolingual""
-  },
-  {
-    ""region"": ""us"",
-    ""source"": ""New Oxford American Dictionary 3e"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""English-Igbo Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""ig""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""monolingual""
-  },
-  {
-    ""source"": ""Oxford Spanish Dictionary 5e"",
-    ""sourceLanguage"": {
-      ""id"": ""es"",
-      ""language"": ""Spanish""
+    {
+      ""source"": ""English-Romanian Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""ro""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""monolingual""
-  },
-  {
-    ""source"": ""Oxford Thesaurus of English"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""English-Tatar Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""tt""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""monolingual""
-  },
-  {
-    ""source"": ""English Sentences Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""English-isiZulu Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""zu""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""monolingual""
-  },
-  {
-    ""source"": ""Spanish Sentences Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""es"",
-      ""language"": ""Spanish""
+    {
+      ""source"": ""Spanish Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""es""
+      },
+      ""targetLanguage"": {
+        ""id"": ""es""
+      },
+      ""type"": ""monolingual""
     },
-    ""type"": ""monolingual""
-  },
-  {
-    ""source"": ""Oxford Spanish Dictionary 5e"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""Indonesian-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""id""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""es"",
-      ""language"": ""Spanish""
+    {
+      ""source"": ""Northern Sotho-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""nso""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Oxford Spanish Dictionary 5e"",
-    ""sourceLanguage"": {
-      ""id"": ""es"",
-      ""language"": ""Spanish""
+    {
+      ""source"": ""Telugu-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""te""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""Turkmen-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""tk""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""other""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Oxford Bilingual School Dictionary: isiZulu and English"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""Setswana-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""tn""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""zu"",
-      ""language"": ""isiZulu""
+    {
+      ""source"": ""Tok Pisin-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""tpi""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Oxford Bilingual School Dictionary: isiZulu and English"",
-    ""sourceLanguage"": {
-      ""id"": ""zu"",
-      ""language"": ""isiZulu""
+    {
+      ""source"": ""Chinese-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""zh""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""English-Turkmen Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""tk""
+      },
+      ""type"": ""other""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Oxford Bilingual School Dictionary: Northern Sotho and English"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""Spanish-Quechua(Southern Bolivian) Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""es""
+      },
+      ""targetLanguage"": {
+        ""id"": ""qu""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""nso"",
-      ""language"": ""Northern Sotho""
+    {
+      ""source"": ""Italian-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""it""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Oxford Bilingual School Dictionary: Northern Sotho and English"",
-    ""sourceLanguage"": {
-      ""id"": ""nso"",
-      ""language"": ""Northern Sotho""
+    {
+      ""source"": ""Greek-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""el""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""English-Greek Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""el""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Bilingual English Romanian Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""English-Malay Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""ms""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""ro"",
-      ""language"": ""Romanian""
+    {
+      ""source"": ""English-Setswana Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""tn""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Monolingual Hindi Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""hi"",
-      ""language"": ""Hindi""
+    {
+      ""source"": ""English-Chinese Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""zh""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""monolingual""
-  },
-  {
-    ""source"": ""Monolingual Swahili Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""sw"",
-      ""language"": ""Swahili""
+    {
+      ""source"": ""Malay-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""ms""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""monolingual""
-  },
-  {
-    ""source"": ""Monolingual Latvian Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""lv"",
-      ""language"": ""Latvian""
+    {
+      ""source"": ""Quechua(Southern Bolivian)-Spanish Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""qu""
+      },
+      ""targetLanguage"": {
+        ""id"": ""es""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""monolingual""
-  },
-  {
-    ""source"": ""Urdu English Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""ur"",
-      ""language"": ""Urdu""
+    {
+      ""source"": ""isiXhosa-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""xh""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""German-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""de""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Bilingual English Malay Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""region"": ""us"",
+      ""source"": ""American English Dictionary (NOAD)"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""monolingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""ms"",
-      ""language"": ""Malay""
+    {
+      ""source"": ""English-German Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""de""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Bilingual English Malay Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""ms"",
-      ""language"": ""Malay""
+    {
+      ""source"": ""English-Indonesian Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""id""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""English-Italian Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""it""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Bilingual English Setswana Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""English-Portuguese Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""pt""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""tn"",
-      ""language"": ""Setswana""
+    {
+      ""source"": ""English-Tajik Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""tg""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Bilingual English Setswana Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""tn"",
-      ""language"": ""Setswana""
+    {
+      ""source"": ""English-Tok Pisin Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""tpi""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""English-isiXhosa Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""xh""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Bilingual English Indonesian Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""Spanish-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""es""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""id"",
-      ""language"": ""Indonesian""
+    {
+      ""source"": ""Gujarati Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""gu""
+      },
+      ""targetLanguage"": {
+        ""id"": ""gu""
+      },
+      ""type"": ""monolingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Bilingual English Indonesian Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""id"",
-      ""language"": ""Indonesian""
+    {
+      ""source"": ""Hindi Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""hi""
+      },
+      ""targetLanguage"": {
+        ""id"": ""hi""
+      },
+      ""type"": ""monolingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""Latvian Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""lv""
+      },
+      ""targetLanguage"": {
+        ""id"": ""lv""
+      },
+      ""type"": ""monolingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Bilingual English German Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""Portuguese-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""pt""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""de"",
-      ""language"": ""German""
+    {
+      ""source"": ""Swahili Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""sw""
+      },
+      ""targetLanguage"": {
+        ""id"": ""sw""
+      },
+      ""type"": ""monolingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Bilingual English German Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""de"",
-      ""language"": ""German""
+    {
+      ""source"": ""Tamil-Tamil-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""ta""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""Tatar-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""tt""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Bilingual English Portuguese Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""Urdu-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""ur""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""pt"",
-      ""language"": ""Portuguese""
+    {
+      ""region"": ""gb"",
+      ""source"": ""British English Dictionary (ODE)"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""monolingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Bilingual English Portuguese Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""pt"",
-      ""language"": ""Portuguese""
+    {
+      ""source"": ""English-Northern Sotho Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""nso""
+      },
+      ""type"": ""bilingual""
     },
-    ""targetLanguage"": {
-      ""id"": ""en"",
-      ""language"": ""English""
+    {
+      ""source"": ""English-Yoruba Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""en""
+      },
+      ""targetLanguage"": {
+        ""id"": ""yo""
+      },
+      ""type"": ""bilingual""
     },
-    ""type"": ""bilingual""
-  },
-  {
-    ""source"": ""Monolingual Tamil Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""ta"",
-      ""language"": ""Tamil""
+    {
+      ""source"": ""Romanian Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""ro""
+      },
+      ""targetLanguage"": {
+        ""id"": ""ro""
+      },
+      ""type"": ""monolingual""
     },
-    ""type"": ""monolingual""
-  },
-  {
-    ""source"": ""Monolingual Gujarati Dictionary"",
-    ""sourceLanguage"": {
-      ""id"": ""gu"",
-      ""language"": ""Gujarati""
-    },
-    ""type"": ""monolingual""
-  }
-]";
+    {
+      ""source"": ""isiZulu-English Dictionary"",
+      ""sourceLanguage"": {
+        ""id"": ""zu""
+      },
+      ""targetLanguage"": {
+        ""id"": ""en""
+      },
+      ""type"": ""bilingual""
+    }
+  ]";
 
     #endregion
   }
