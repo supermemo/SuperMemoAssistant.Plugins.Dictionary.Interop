@@ -30,7 +30,6 @@
 
 
 
-using System.Collections.Generic;
 using SuperMemoAssistant.Interop.SuperMemo.Elements.Types;
 using SuperMemoAssistant.Plugins.Dictionary.Interop.OxfordDictionaries.Models;
 using SuperMemoAssistant.Sys.Remoting;
