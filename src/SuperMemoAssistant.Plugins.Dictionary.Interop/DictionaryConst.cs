@@ -123,7 +123,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop {
 
 
     public static OxfordDictionary DefaultDictionary { get; } =
-      MonolingualDictionaries.SafeGet(DefaultDictionaryStr) ?? MonolingualDictionaries.Values.FirstOrDefault();
+      MonolingualDictionaries.SafeRead(DefaultDictionaryStr) ?? MonolingualDictionaries.Values.FirstOrDefault();
 
     public const string DefaultDictionaryStr = "British English Dictionary (ODE)";
     public const string OxfordLanguagesJson = @"[
