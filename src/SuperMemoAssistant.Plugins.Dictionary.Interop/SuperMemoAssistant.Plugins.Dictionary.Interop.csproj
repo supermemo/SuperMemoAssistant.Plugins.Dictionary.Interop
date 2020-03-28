@@ -5,7 +5,7 @@
     <RootNamespace>SuperMemoAssistant.Plugins.Dictionary.Interop</RootNamespace>
     <Deterministic>true</Deterministic>
     <UseWPF>true</UseWPF>
-    <DocumentationFile>$(OutputPath)SuperMemoAssistant.Plugins.Dictionary.Interop.xml</DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyVersion>2.0.4.5</AssemblyVersion>
     <FileVersion>2.0.4.5</FileVersion>
     <Version>2.0.4</Version>
