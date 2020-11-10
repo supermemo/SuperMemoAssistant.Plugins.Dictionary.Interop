@@ -6,9 +6,9 @@
     <Deterministic>true</Deterministic>
     <UseWPF>true</UseWPF>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyVersion>2.0.5</AssemblyVersion>
-    <FileVersion>2.0.5</FileVersion>
-    <Version>2.0.5</Version>
+    <AssemblyVersion>2.1.0</AssemblyVersion>
+    <FileVersion>2.1.0</FileVersion>
+    <Version>2.1.0</Version>
   </PropertyGroup>
   <PropertyGroup Label="PackageInfo">
     <RepositoryUrl>https://github.com/supermemo/SuperMemoAssistant.Plugins.Dictionary.Interop</RepositoryUrl>
@@ -45,10 +45,10 @@
       <Version>0.2.1.51</Version>
     </PackageReference>
     <PackageReference Include="Sentry.Serilog">
-      <Version>2.1.1</Version>
+      <Version>2.1.6</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
-      <Version>2.0.5.13</Version>
+      <Version>2.1.0-beta.7</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup>
@@ -66,4 +66,22 @@
     </ItemGroup>
     <Exec Command="&quot;%(NuGetExe.FullPath)&quot; pack $(AssemblyName).nuspec -Version @(VersionNumber) -Properties Configuration=$(Configuration) -OutputDirectory $(SolutionDir)releases\nupkg -BasePath $(OutDir)" />
   </Target>
+  <ItemGroup>
+    <PackageReference Update="AsyncFixer" Version="1.3.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="16.8.55" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Roslynator.Analyzers" Version="3.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="WpfAnalyzers" Version="3.3.0" />
+  </ItemGroup>
 </Project>
