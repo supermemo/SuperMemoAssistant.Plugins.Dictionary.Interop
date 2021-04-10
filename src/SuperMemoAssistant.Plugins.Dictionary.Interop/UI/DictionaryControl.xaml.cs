@@ -61,7 +61,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
     #region Constants & Statics
 
     public static readonly DependencyProperty EntriesProperty =
-      DependencyProperty.Register("Entries",
+      DependencyProperty.Register(nameof(Entries),
                                   typeof(PendingEntryResult),
                                   typeof(DictionaryControl),
                                   new PropertyMetadata(
@@ -74,10 +74,10 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop.UI
                                   ));
 
     public static readonly DependencyProperty OnBeforeExtractProperty =
-      DependencyProperty.Register("OnBeforeExtract", typeof(DictionaryWordExtractingDelegate), typeof(DictionaryControl));
+      DependencyProperty.Register(nameof(OnBeforeExtract), typeof(DictionaryWordExtractingDelegate), typeof(DictionaryControl));
 
     public static readonly DependencyProperty OnAfterExtractProperty =
-      DependencyProperty.Register("OnAfterExtract", typeof(DictionaryWordExtractedDelegate), typeof(DictionaryControl));
+      DependencyProperty.Register(nameof(OnAfterExtract), typeof(DictionaryWordExtractedDelegate), typeof(DictionaryControl));
 
     #endregion
 
