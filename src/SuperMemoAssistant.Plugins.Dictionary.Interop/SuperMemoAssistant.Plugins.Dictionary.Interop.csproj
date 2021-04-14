@@ -45,7 +45,7 @@
       <Version>0.2.1.51</Version>
     </PackageReference>
     <PackageReference Include="Sentry.Serilog">
-      <Version>2.1.6</Version>
+      <Version>3.3.1</Version>
     </PackageReference>
     <PackageReference Include="SuperMemoAssistant.Interop">
       <Version>2.1.0-beta.12</Version>
@@ -66,22 +66,4 @@
     </ItemGroup>
     <Exec Command="&quot;%(NuGetExe.FullPath)&quot; pack $(AssemblyName).nuspec -Version @(VersionNumber) -Properties Configuration=$(Configuration) -OutputDirectory $(SolutionDir)releases\nupkg -BasePath $(OutDir)" />
   </Target>
-  <ItemGroup>
-    <PackageReference Update="AsyncFixer" Version="1.3.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.7.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers" Version="16.8.55" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="Roslynator.Analyzers" Version="3.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Update="WpfAnalyzers" Version="3.3.0" />
-  </ItemGroup>
 </Project>

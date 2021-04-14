@@ -45,7 +45,7 @@ namespace SuperMemoAssistant.Plugins.Dictionary.Interop {
 </body>";
 
     public const string Error = @"<body>
- <div style=""margin: auto""><p>An error occured while looking up the definition.</p></div>
+ <div style=""margin: auto""><p>An error occurred while looking up the definition.</p></div>
 </body>";
 
     public const string DefinitionRenderTemplate = @"<html>
